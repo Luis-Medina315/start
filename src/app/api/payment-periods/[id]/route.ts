@@ -47,7 +47,9 @@ export async function PUT(req: Request, { params }: Ctx) {
 export async function DELETE(_req: Request, { params }: Ctx) {
   try {
     const { id } = await params;
-    await prisma.paymentPeriod.delete({ where: { id: Number(id) } });
+    const periodId = Number(id);
+    await prisma.rawMaterialEntry.deleteMany({ where: { paymentPeriodId: periodId } });
+    await prisma.paymentPeriod.delete({ where: { id: periodId } });
     return NextResponse.json({ ok: true });
   } catch (err) {
     return NextResponse.json({ error: (err as Error).message }, { status: 500 });
